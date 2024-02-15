@@ -1,25 +1,31 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { addTodo, deleteTodo, removeTodo } from '../actions';
+import todoReducers from '../reducers/todoReducers';
 
 function Todo() {
   const [inputData, setInputData] = useState('');
-  const [items, setItems] = useState([]);
+  // const [items, setItems] = useState([]);
+  const dispatch = useDispatch();
+  const list = useSelector(state => state.todoReducers.list)
 
   const handleAddItem = () => {
-    if (!inputData){
-        
-    }else{
-        setItems([ ...items, inputData ]);
-        setInputData('');
+    if (inputData){
+      dispatch(addTodo(inputData));
+      // setItems([ ...items, inputData ]);
+      setInputData('');
     }
   }
 
   const handleDelItem = (id) => {
-    const updatedItems = items.filter((item, idx) => idx !== id);
-    setItems(updatedItems);
+    dispatch(deleteTodo(id));
+    // const updatedItems = items.filter((item, idx) => idx !== id);
+    // setItems(updatedItems);
   }
 
   const handleRemoveAll = () => {
-    setItems([]);
+    dispatch(removeTodo());
+    // setItems([]);
   }
   
   return (
@@ -31,9 +37,9 @@ function Todo() {
         </div>
         <div className='mb-4'>
             {
-                items?.map((item, idx) => <div key={idx} className='flex justify-between bg-violet-800 text-white rounded px-4 py-1 mb-2'>
-                    <p className='text-lg font-medium'>{item}</p>
-                    <button onClick={() => handleDelItem(idx)}>del</button>
+                list.map(item => <div key={item.id} className='flex justify-between bg-violet-800 text-white rounded px-4 py-1 mb-2'>
+                    <p className='text-lg font-medium'>{item.data}</p>
+                    <button onClick={() => handleDelItem(item.id)}>del</button>
                 </div>)
             }
         </div>
